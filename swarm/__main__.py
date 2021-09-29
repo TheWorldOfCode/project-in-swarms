@@ -50,6 +50,12 @@ def main(args):
     if type(args.delay) == list:
         args.delay = args.delay[0]
 
+    if type(args.seed) == list:
+        args.seed = args.seed[0]
+
+    if type(args.record) == list:
+        args.record = args.record[0]
+
     logging.root.setLevel(logging.INFO)
     logging.info(f"Runtime arguments f{args}")
 
