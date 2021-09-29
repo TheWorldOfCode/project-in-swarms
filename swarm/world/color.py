@@ -1,0 +1,5 @@
+"""" WORLD COLOR ACCORDING TO MENNING """
+
+UNEXPLORATED = "red"
+EXPLORATED = "green"
+START = "blue"
