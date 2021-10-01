@@ -9,7 +9,7 @@ setup(
     packages=[
         'swarm',
         'swarm.world',
-        'swarm.agent'
+        'swarm.agents'
     ],
 #    scripts=['bin/vo3D'],
 #    entry_points={
