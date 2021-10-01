@@ -63,7 +63,13 @@ class World(object):
         :returns: The number of agents
 
         """
-        return self._map.nodes[node].get("agents", default=0)
+        assert 0 <= node <= nx.number_of_nodes(self._map), "Get number of agents from a non existing node"
+        ret = self._map.nodes[node].get("agents")
+        print(ret)
+        if ret is None:
+            return 0
+
+        return ret
 
     def update_value(self, node: int, key: str, value):
         """ Update a value on a node
