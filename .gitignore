@@ -1,4 +1,5 @@
 *~
+*.sw*
 swarm.egg-info/
 container_id
-*/__pycache__/
+*/__pycache__/*
