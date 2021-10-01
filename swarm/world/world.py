@@ -56,6 +56,15 @@ class World(object):
         """
         return self._map[node_1][node_2]["weight"]
 
+    def get_agents_numbers(self, node):
+        """ Get the number of agents and a given node
+
+        :node: The node id
+        :returns: The number of agents
+
+        """
+        return self._map.nodes[node].get("agents", default=0)
+
     def update_value(self, node: int, key: str, value):
         """ Update a value on a node
 
