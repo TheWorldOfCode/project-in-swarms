@@ -13,6 +13,7 @@ from . import Simulator
 
 
 def args():
+    """ Handles the arguments """
     parser = argparse.ArgumentParser(description="Solving the traveling Salesman problem using swarms.\n Autogenerate graph worlds with random weights and number of nodes")
 
     subparsers = parser.add_subparsers(help="Commands")
@@ -125,15 +126,11 @@ def main(args):
 
 
 def scripts(args):
-    """TODO: Docstring for scripts.
-
-    :args: TODO
-    :returns: TODO
-
-    """
+    """ The main function when using scripts """
 
     if args.load is not None:
         import importlib.machinery as imp
+
         logging.root.setLevel(logging.INFO)
         logging.info(f"Runtime arguments f{args}")
         script = args.load[0]
