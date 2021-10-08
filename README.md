@@ -32,7 +32,7 @@ In the code below are there showed an example with a random agent.
 
 ``` python
 """ A random walk agent """
-from swarm.agents.AgentInterface import AgentInterface
+from . AgentInterface import AgentInterface
 
 import random as rnd
 from typing import Callable
@@ -42,10 +42,11 @@ class RandomAgent(AgentInterface):
 
     """ A random walk agent """
 
-    def move(self, world) -> int:
+    def move(self, world, updated_pos) -> int:
         """ Move the agent
 
         :world: The world
+        :updated_pos: The updated position of agents already moved
         :returns: The new node it would move to
 
         """
