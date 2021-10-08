@@ -78,7 +78,6 @@ def main(args):
     logging.root.setLevel(logging.INFO)
     logging.info(f"Runtime arguments f{args}")
 
-    #world_generator = WorldGenerator(10, 20, 1, (1, 10), 0)
     world_generator = WorldGenerator(args.nodes, args.edge_multiplier,
                                      args.edge_cost, args.seed)
 
@@ -117,7 +116,7 @@ def main(args):
     print("Swarm summary")
     print(f"\tLowest traveling distance {results.lowest}")
     print(f"\tMean traveling distance {results.mean} (±{results.std})")
-    print(f"\tLowest traveling distance {results.highest}")
+    print(f"\tHighest traveling distance {results.highest}")
 
     if args.record is not None:
         recorder.save(args.record)
