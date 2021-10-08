@@ -2,4 +2,5 @@
 *.sw*
 swarm.egg-info/
 container_id
-*/__pycache__/*
+*.mp4
+*.pyc
