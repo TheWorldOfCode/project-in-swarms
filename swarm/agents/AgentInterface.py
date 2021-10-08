@@ -29,10 +29,11 @@ class AgentInterface():
         if self._conf.get("record", False):
             self._history = []
 
-    def move(self, world) -> int:
+    def move(self, world, updated_pos) -> int:
         """ Move the agent
 
         :world: The world
+        :updated_pos: The updated position of agents already moved
         :returns: The new node it would move to
 
         """
