@@ -85,13 +85,15 @@ class Swarm(object):
 
         """
         positions = {}
-
+        agent_movement = []
+    
         for agent in self._agents:
-            pos = agent.move(world)
-
+            old_pos = agent.position
+            pos = agent.move(world, agent_movement)
+            agent_movement.append([old_pos, pos])
             positions.setdefault(str(pos), 0)
             positions[str(pos)] += 1
-        
+
         new_explorated = 0
         for k in positions.keys():
             new_explorated += int(world.explorated(k))
