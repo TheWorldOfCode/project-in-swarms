@@ -65,7 +65,6 @@ class World(object):
         """
         assert 0 <= node <= nx.number_of_nodes(self._map), "Get number of agents from a non existing node"
         ret = self._map.nodes[node].get("agents")
-        print(ret)
         if ret is None:
             return 0
 
