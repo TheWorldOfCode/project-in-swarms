@@ -4,6 +4,7 @@ import logging
 import os
 
 
+
 class DummyRecorder(object):
 
     """ This is a dummy recorder"""
@@ -45,3 +46,64 @@ class VideoRecorder(object):
 
         """
         os.system(f"ffmpeg -r {self._fps} -i {self._temp}/frame_%01d.png -vcodec mpeg4 -y {filename}")
+
+
+class DummyDataRecorder(object):
+
+    """ This is a dummy data recorder"""
+
+    def __init__(self, filename="results.yaml"):
+        """ Create the recorder 
+            :filename: The file to save to 
+        """
+        self._filename = filename
+        self._data_functions = []
+
+    def save(self, sim, swarm):
+        """ Save the results of simulation to file
+            :sim: The simulation
+            :swarm: The swarm
+        """
+
+        if len(self._data_functions) != 0:
+            with open(self._filename, "w") as f:
+                for func in self._data_functions:
+                    func(sim, swarm, f)
+
+
+class BasicDataRecorder(DummyDataRecorder):
+
+    """ Saving the basic information from the simulation"""
+
+    def __init__(self, filename="result.yaml"):
+        """ Create the recorder
+
+        :filename: The file to save to
+
+        """
+        DummyDataRecorder.__init__(self, filename)
+        self._data_functions.append(self.summary)
+
+    def summary(self, sim, swarm, f):
+        """ Save the summary
+
+        :sim: The simulation
+        :swarm: The swarm
+        :f: The file
+
+        """
+        sim_results = sim.get_results()
+        f.write(f"seed: {sim_results.seed}\n")
+        f.write(f"nodes: {sim_results.nodes}\n")
+        f.write(f"turns: {sim_results.turns}\n")
+        f.write(f"discovered: {sim_results.discovered}\n")
+
+        swarm_summary = swarm.summary()
+        f.write(f"swarm_lowest_travel_distance: {swarm_summary.lowest}\n")
+        f.write(f"swarm_mean_travel_distance: {swarm_summary.mean}\n")
+        f.write(f"swarm_std_travel_distance: {swarm_summary.std}\n")
+        f.write(f"swarm_highest_travel_distance: {swarm_summary.highest}\n")
+
+
+
+DATA_RECORDER_LIST = [DummyDataRecorder.__name__, BasicDataRecorder.__name__]

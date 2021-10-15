@@ -15,7 +15,18 @@ class SimulationResult(object):
     def __init__(self):
         self._turns = 0
         self._nodes = 0
+        self._seed = 0
         self._discovered = []
+    
+    @property
+    def seed(self) -> int:
+        """ The seed used to generate world """
+        return self._seed
+
+    @seed.setter 
+    def seed(self, seed):
+        """ Set the seed of world """
+        self._seed = seed
 
     @property
     def turns(self) -> int:
@@ -46,6 +57,16 @@ class SimulationResult(object):
         """ The number of nodes in the world """
         self._nodes = value
 
+    def __str__(self):
+        half = 0
+        turn = 0
+        for i, t in enumerate(self.discovered):
+            half += t
+            if half >= self.nodes/2:
+                turn = i
+                break
+        return f"Simulations result\n \tNumber of turns: {self.turns}\n\tNumber of nodes: {self.nodes}\n\tAbove 50% at turn: {turn}"
+
 
 class Simulator(object):
 
@@ -58,7 +79,7 @@ class Simulator(object):
         :world: TODO
         :display: TODO
         :speed:
-        :recording: Record the process to the file
+            :recording: Record the process to the file
 
         """
         self._world = world
@@ -67,7 +88,7 @@ class Simulator(object):
         self._turns = -1
         self._recorder = recording
 
-    def start(self, swarm: Swarm) -> SimulationResult:
+    def start(self, swarm: Swarm):
         """ Start the simulating
 
         :swarm: The swarm to use
@@ -87,6 +108,7 @@ class Simulator(object):
 
         self._result.turns = self._turns
         self._result.nodes = self._world.size()
+
         return self._result
 
     def stop(self) -> bool:
@@ -97,6 +119,10 @@ class Simulator(object):
         size = self._world.size()
         logging.debug(f"Explorated nodes: {self._explorated}, Total number of nodes: {size}")
         return not self._explorated < size - 1
+
+    def get_results(self) -> SimulationResult:
+        """ Get the result of simulation """
+        return self._result
 
     def display(self):
         """ Show the world """
@@ -129,7 +155,7 @@ class Simulator(object):
             self._turn(swarm)
             self._turns += 1
             self.sleep()
-        
+
         logging.info("Simulation is done")
         if self._display:
             self.display()

@@ -23,13 +23,21 @@ def world_generation():
 
 ##################################
 # THIS FUNCTION IS NOT REQUIRED  #
-# It is used to generate the     #
-# world.                         #
+# It is used to set the recorder #
+# and the filename to save to    #
 ##################################
 
 #def get_video_recorder():
 #    \"\"\" Get the recorder of the simulations \"\"\"
-#    return swarm.VideoRecorder(1)
+#    return swarm.VideoRecorder(1), "filename.mp4"
+
+##################################
+# THIS FUNCTION IS NOT REQUIRED  #
+# It is used to save the result  #
+##################################
+#def get_data_recorder():
+#    \"\"\" Save the data from the simuation to file \"\"\"
+#    return swarm.BasicDataRecorder(\"results.yaml\")
 
 
 ##################################

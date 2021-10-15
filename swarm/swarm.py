@@ -50,6 +50,9 @@ class SwarmSummary(object):
         """ Get the highest """
         return self._highest
 
+    def __str__(self):
+        return f"Swarm summary\n\tLowest traveling distance {self.lowest}\n\tMean traveling distance {self.mean} (±{self.std})\n\tHighest traveling distance {self.highest}"
+
 
 class Swarm(object):
 
@@ -72,7 +75,7 @@ class Swarm(object):
         for amount, gen in self._generator:
             for i in range(amount):
                 agent = gen()
-#                assert issubclass(agent, AgentInterface), "The agent must be a subclass of swarm.agent.AgentInterface"
+                #                assert issubclass(agent, AgentInterface), "The agent must be a subclass of swarm.agent.AgentInterface"
                 self._agents.append(agent)
 
         self._get_position()
@@ -86,7 +89,7 @@ class Swarm(object):
         """
         positions = {}
         agent_movement = []
-    
+
         for agent in self._agents:
             old_pos = agent.position
             pos = agent.move(world, agent_movement)
@@ -141,7 +144,7 @@ class Swarm(object):
 
     def _get_position(self) -> None:
         """ Get the position from the agent
-            (this is only used for getting the initialize position)
+        (this is only used for getting the initialize position)
         """
         self._positions.clear()
 
