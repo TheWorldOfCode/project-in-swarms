@@ -25,6 +25,14 @@ def world_generation():
 #    """ Get the recorder of the simulations """
 #    return swarm.VideoRecorder(1)
 
+##################################
+# THIS FUNCTION IS NOT REQUIRED  #
+# It is used to save the result  #
+##################################
+def get_data_recorder():
+    """ Save the data from the simuation to file """
+    return swarm.AgentDataRecorder("results.yaml")
+
 
 ##################################
 # THIS FUNCTION IS REQUIRED      #
@@ -33,7 +41,8 @@ def world_generation():
 ##################################
 def agent_generator_list():
     """ Get the list of agents to spawn """
-    gen = agents.random_agent_generator()
+    conf = {"history": True}
+    gen = agents.random_agent_generator(conf)
     generators = [[10, gen]]
 
     return generators

@@ -31,7 +31,7 @@ def world_generation():
 ##################################
 def get_data_recorder():
     """ Save the data from the simuation to file """
-    return swarm.BasicDataRecorder("results.yaml")
+    return swarm.AgentDataRecorder("results.yaml")
 
 
 ##################################
@@ -41,7 +41,10 @@ def get_data_recorder():
 ##################################
 def agent_generator_list():
     """ Get the list of agents to spawn """
-    gen = agents.simple_agent_generator()
+
+    conf = {"history": True, 'record': True}
+
+    gen = agents.simple_agent_generator(conf)
     generators = [[10, gen]]
 
     return generators
