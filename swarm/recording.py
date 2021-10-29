@@ -105,5 +105,42 @@ class BasicDataRecorder(DummyDataRecorder):
         f.write(f"swarm_highest_travel_distance: {swarm_summary.highest}\n")
 
 
+class AgentDataRecorder(BasicDataRecorder):
 
-DATA_RECORDER_LIST = [DummyDataRecorder.__name__, BasicDataRecorder.__name__]
+    """ Recorder information about the agents """
+
+    def __init__(self, filename="result.yaml"):
+        """ Create the recorder
+
+        :filename: The file to save to
+
+        """
+        BasicDataRecorder.__init__(self, filename)
+        self._data_functions.append(self.agent_history)
+        logging.warn("AgentDataRecorder requires that agents has enable there history for workning")
+
+    def agent_history(self, sim, swarm, f):
+        """ Save the movement history of the agent
+
+        :sim: The simulation
+        :swarm: The swarm
+        :f: The file
+
+        """
+        f.write("agents_history: [\n")
+
+        for agent in swarm._agents:
+            f.write(f"{agent._history},\n")
+
+        f.write("]\n")
+
+        f.write("agents_record: [\n")
+
+        for agent in swarm._agents:
+            f.write(f"{agent._record},\n")
+
+        f.write("]\n")
+
+
+
+DATA_RECORDER_LIST = [DummyDataRecorder.__name__, BasicDataRecorder.__name__, AgentDataRecorder.__name__]

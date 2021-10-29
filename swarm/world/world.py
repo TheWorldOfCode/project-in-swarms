@@ -3,7 +3,7 @@ import networkx as nx
 from networkx.drawing.nx_agraph import graphviz_layout
 import logging
 
-from .color import UNEXPLORATED, EXPLORATED, START
+from .color import UNEXPLORATED, EXPLORATED, START, ClassicColor
 
 
 class World(object):
@@ -16,6 +16,11 @@ class World(object):
         self._map = map
         self._labels = labels
 
+    def reset(self):
+        """ Reset the map """
+        for i in range(len(self._map.nodes)):
+            self.update_value(i, "color", UNEXPLORATED)
+            
     def connected(self, node: int) -> list:
         """ Get the corrected nodes to node
 
@@ -82,15 +87,19 @@ class World(object):
         assert 0 <= node <= nx.number_of_nodes(self._map), "Updating value on a non existing node"
         self._map.nodes[node][key] = value
 
-    def view(self, block=True):
+    def view(self, block=True, node_id=False, color_map=ClassicColor()):
         """ Show the world
 
         """
         color = self._map.nodes(data="color", default=UNEXPLORATED)
-        color = [c for _, c in color]
+        color = [color_map(c) for _, c in color]
 
-        agents = self._map.nodes(data="agents", default=0)
-        agents = {n: a for n, a in agents}
+        if node_id:
+            agents = self._map.nodes(data="agents", default=0)
+            agents = {n: n for n, _ in agents}
+        else:
+            agents = self._map.nodes(data="agents", default=0)
+            agents = {n: a for n, a in agents}
 
         pos = graphviz_layout(self._map, prog='neato')
         nx.draw_networkx(self._map, pos=pos, node_color=color, labels=agents)

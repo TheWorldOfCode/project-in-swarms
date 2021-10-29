@@ -26,14 +26,15 @@ class RandomAgent(AgentInterface):
         return self._position
 
 
-def random_agent_generator() -> Callable:
+def random_agent_generator(conf=None) -> Callable:
     """ Create a random agent generator
 
+    :conf: Agent configuration
     :returns: A generator function
 
     """
 
     def generator():
-        return RandomAgent(None, rnd.randint(0, 10))
+        return RandomAgent(conf, rnd.randint(0, 10))
 
     return generator

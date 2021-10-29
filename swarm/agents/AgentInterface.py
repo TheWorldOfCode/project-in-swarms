@@ -27,7 +27,7 @@ class AgentInterface():
             self._history = []
 
         if self._conf.get("record", False):
-            self._history = []
+            self._record = []
 
     def move(self, world, updated_pos) -> int:
         """ Move the agent
@@ -48,7 +48,7 @@ class AgentInterface():
         if not self._conf.get("record", False):
             return
 
-        self._recrod.append(information)
+        self._record.append(information)
 
     @property
     def position(self) -> int:

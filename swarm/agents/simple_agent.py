@@ -54,10 +54,16 @@ class SimpleAgent(AgentInterface):
             else:
                 lamb_2.append(i)
             
+        if sum_lamb == 0:
+            sum_lamb = 1
+
         for i in lamb_2:
             likelihood[i] = sum_lamb/len(lamb_2)
 
-        logging.info(f"Likelihood: {str(likelihood)}")
+        logging.debug(f"Likelihood: {str(likelihood)}")
+
+        if self._conf.get('record', False):
+            self.record(likelihood)
         
         if sum(likelihood) > 1:
             logging.warn(f"The sum is approve 1, likelihood {likelihood}, Alpha: {nr_agents}")
@@ -89,12 +95,8 @@ class SimpleAgent(AgentInterface):
             nr_agents.append(agents)
 
         total = sum(nr_agents)
-        if total <= 0:
-            new_position = rnd.choice(canndidates)
-        else:
-            likelihood = self.calculation(total, nr_agents)
-            new_position = rnd.choices(canndidates, weights=likelihood)[0]
-            print(new_position)
+        likelihood = self.calculation(total, nr_agents)
+        new_position = rnd.choices(canndidates, weights=likelihood)[0]
 
         self.traveled_distance += world.cost(self.position, new_position)
         self.position = new_position
@@ -102,14 +104,15 @@ class SimpleAgent(AgentInterface):
         return self._position
 
 
-def simple_agent_generator() -> Callable:
+def simple_agent_generator(conf=None) -> Callable:
     """ Create a simple agent generator
 
+    :conf: The configuration
     :returns: A generator function
 
     """
 
     def generator():
-        return SimpleAgent(None, rnd.randint(0, 10))
+        return SimpleAgent(conf, rnd.randint(0, 10))
 
     return generator

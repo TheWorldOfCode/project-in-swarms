@@ -10,6 +10,7 @@ from .agents import random_agent_generator
 from . import VideoRecorder, DummyRecorder, DummyDataRecorder, BasicDataRecorder, DATA_RECORDER_LIST
 from . import Swarm
 from . import Simulator
+from . import Debugger
 
 
 def args():
@@ -56,6 +57,7 @@ def args():
                        type=str)
     group.add_argument("--get-example",
                        help="Get a example script", action="store_true")
+    subparse_scripts.add_argument("--debug", help="Debug a result", nargs=1, type=str, default=None)
 
     subparse_scripts.set_defaults(func=scripts)
 
@@ -133,8 +135,26 @@ def summary(simulation: Simulator, swarm: Swarm, save_data):
 
 def scripts(args):
     """ The main function when using scripts """
+    
+    if args.debug is not None:
+        import importlib.machinery as imp
+        import yaml
+        script = args.load[0]
+        script_module_loader = imp.SourceFileLoader("script", script)
+        script_module = script_module_loader.load_module()
 
-    if args.load is not None:
+        if not hasattr(script_module, "world_generation"):
+            logging.fatal("The script is missing the function world_generation, to generate the world")
+            return 1
+
+        world = script_module.world_generation()
+
+        with open(args.debug[0], "r") as f:
+            info = yaml.load(f)
+
+        debugger = Debugger(world, info)
+        debugger.cmdloop()
+    elif args.load is not None:
         import importlib.machinery as imp
 
         logging.root.setLevel(logging.INFO)
