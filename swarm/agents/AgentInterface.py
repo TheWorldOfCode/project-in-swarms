@@ -1,4 +1,6 @@
 """ The interface for a swarm agent """
+import random as rnd
+import time
 
 
 class AgentInterface():
@@ -22,6 +24,13 @@ class AgentInterface():
         self._conf = conf
         self._position = position
         self._traveled_distance = 0
+
+        state = rnd.getstate()
+
+        rnd.seed(time.time())
+        self._rnd_state = rnd.getstate()
+
+        rnd.setstate(state)
 
         if self._conf.get("history", False):
             self._history = []
@@ -49,6 +58,12 @@ class AgentInterface():
             return
 
         self._record.append(information)
+
+    def switch_state(self):
+        """ Switch random state """
+        state = rnd.getstate()
+        rnd.setstate(self._rnd_state)
+        self._rnd_state = state
 
     @property
     def position(self) -> int:
