@@ -48,7 +48,7 @@ class SimpleAgent(AgentInterface):
         sum_lamb = 0
         lamb_2 = []
         for i, alpha in enumerate(nr_agents):
-            likelihood[i] = (1/float(eta))**float(alpha)
+            likelihood[i] = (1/float(eta))**float(alpha + 0.01)
             if likelihood[i] != 1:
                 sum_lamb += likelihood[i]
             else:
@@ -60,10 +60,15 @@ class SimpleAgent(AgentInterface):
         for i in lamb_2:
             likelihood[i] = sum_lamb/len(lamb_2)
 
+        s = sum(likelihood)
+
+        for i in range(eta):
+            likelihood[i] /= s
+
         logging.debug(f"Likelihood: {str(likelihood)}")
 
         if self._conf.get('record', False):
-            self.record(likelihood)
+            self.record({'alpha': nr_agents, 'likelihood': likelihood})
         
         if sum(likelihood) > 1:
             logging.warn(f"The sum is approve 1, likelihood {likelihood}, Alpha: {nr_agents}")
@@ -78,6 +83,7 @@ class SimpleAgent(AgentInterface):
         :returns: The new node it would move to
 
         """
+        self.switch_state()
         canndidates = world.connected(self.position)
 
         nr_agents = []
@@ -101,6 +107,7 @@ class SimpleAgent(AgentInterface):
         self.traveled_distance += world.cost(self.position, new_position)
         self.position = new_position
 
+        self.switch_state()
         return self._position
 
 
