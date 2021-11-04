@@ -106,7 +106,7 @@ class Debugger(Cmd):
     def help_show(self):
         print("Show the map\n\t usage: show [turn]\n\n If given a turn it would show the state of the turn")
 
-    def do_info(self, inp):
+    def do_node(self, inp):
         """ Show information about a node """
         args = inp.split(" ")
 
@@ -127,7 +127,7 @@ class Debugger(Cmd):
 
                 print(f"\tVisists {s}")
 
-    def help_info(self):
+    def help_node(self):
         print("Show basic information about nodes\n \tusage: info node ...")
 
     def do_turn(self, inp):
@@ -147,3 +147,51 @@ class Debugger(Cmd):
                 for n in set(turns_agents):
                     print(f"\tNode {n} has {turns_agents.count(n)} agents")
 
+    def help_turn(self):
+        print("Show information about a turn\n\tusgae: turn turn_nr ...")
+
+    def do_info(self, inp):
+        """ Show information about a node at a given turn """
+
+        args = inp.split(" ")
+
+        if len(args) != 2:
+            print("WRONG number of arguments")
+            self.help_info()
+        else:
+            turn = int(args[0])
+            node = int(args[1])
+
+            print(f"Information about {node} at turn {turn}")
+
+            if node in self._discovered[turn]:
+                print("\t- Explorated")
+            else:
+                print("\t- Unexplorated")
+            
+            agents = []
+            for i, agent in enumerate(self._results["agents_history"]):
+                if int(agent[turn]) == node:
+                    next = "Finished"
+                    if turn < len(agent)-1:
+                        next = f"Node {agent[turn + 1]}"
+                    agents.append((i, next))
+
+            if len(agents) == 0:
+                print("\t- No agents at node")
+            else:
+                print("\t- Agents:")
+
+                for agent, next in agents:
+                    print(f"\t\t- Agent {agent} -> Move to {next}")
+                    info = self._results["agents_record"][agent][turn]
+
+                    for key in info:
+                        value = info[key]
+                        print(f"\t\t\t- {key}: {value}")
+
+
+                
+
+    def help_info(self):
+        print("Show information about a node at a given turn\n\tusage: info turn node")
