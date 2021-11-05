@@ -30,7 +30,7 @@ class World(object):
         """
         return list(nx.neighbors(self._map, node))
 
-    def explorated(self, node) -> bool:
+    def explore(self, node) -> bool:
         """ Set the node as explorated
 
         :node: The node id
@@ -46,6 +46,12 @@ class World(object):
 
         self._map.nodes[node]["color"] = EXPLORATED
         return True
+
+    def explorated(self, node) -> bool:
+        """ Check if a node is explorated """
+        node = int(node)
+        assert 0 <= node <= nx.number_of_nodes(self._map), "Marking a non existing node"
+        return self._map.nodes[node].get("color") == START or self._map.nodes[node].get("color") == EXPLORATED
 
     def size(self) -> int:
         """ Get the size of the world """

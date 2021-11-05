@@ -99,7 +99,7 @@ class Debugger(Cmd):
                 if self._check_turn(turn):
                     self._world.reset()
                     for n in self._discovered[turn]:
-                        self._world.explorated(n)
+                        self._world.explore(n)
 
                     self.show_map(True, ClassicColor())
 

@@ -17,12 +17,13 @@ class RandomAgent(AgentInterface):
         :returns: The new node it would move to
 
         """
+        self.switch_state()
         canndidates = world.connected(self.position)
         new_position = rnd.choice(canndidates)
 
         self.traveled_distance += world.cost(self.position, new_position)
         self.position = new_position
-
+        self.switch_state()
         return self._position
 
 

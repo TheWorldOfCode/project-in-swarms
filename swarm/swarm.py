@@ -99,7 +99,7 @@ class Swarm(object):
 
         new_explorated = 0
         for k in positions.keys():
-            new_explorated += int(world.explorated(k))
+            new_explorated += int(world.explore(k))
 
         self._positions.clear()
         self._positions = positions
