@@ -129,7 +129,6 @@ def summary(simulation: Simulator, swarm: Swarm, save_data):
     print()
     print(swarm_result)
 
-    print(save_data)
     save_data.save(simulation, swarm)
 
 
