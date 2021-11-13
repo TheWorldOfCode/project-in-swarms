@@ -94,6 +94,7 @@ class Simulator(object):
         :swarm: The swarm to use
 
         """
+        self._interrupt = False
         logging.info("Getting the initialize position of the swarm agents")
         self._agents_positions, count_position = swarm.get_positions()
 
@@ -133,6 +134,10 @@ class Simulator(object):
             plt.draw()
             self._recorder.record(plt.gcf())
 
+    def interrupt(self):
+        """ Interrupt the simulation and stop it """
+        self._interrupt = True
+
     def sleep(self):
         """ Sleep for a time step """
         if self._speed > -1:
@@ -149,7 +154,7 @@ class Simulator(object):
         self._turns = 0
         self._explorated = 0
 
-        while not self.stop():
+        while not self.stop() and not self._interrupt:
             logging.debug(f"Turn {self._turns} is now running")
             self.display()
             self._turn(swarm)

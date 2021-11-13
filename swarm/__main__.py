@@ -3,6 +3,7 @@ import logging
 import argparse
 import os
 import sys
+import signal
 from random import seed
 
 from .world import World, WorldGenerator
@@ -61,11 +62,19 @@ def args():
 
     subparse_scripts.set_defaults(func=scripts)
 
-    return parser.parse_args()
+    return parser.parse_known_args()
 
 
-def main(args):
+def interrupt_sim(signum, frame):
+    """ Signal handler from CTRL+c for interrupting the simulation """
+    global sim
+    sim.interrupt()
+
+
+def main(args, unknown):
     """ Run the main loop """
+    global sim
+    signal.signal(signal.SIGINT, interrupt_sim)
     if type(args.swarm) == list:
         args.swarm = args.swarm[0]
 
@@ -132,9 +141,9 @@ def summary(simulation: Simulator, swarm: Swarm, save_data):
     save_data.save(simulation, swarm)
 
 
-def scripts(args):
+def scripts(args, unknown):
     """ The main function when using scripts """
-    
+
     if args.debug is not None:
         import importlib.machinery as imp
         import yaml
@@ -154,6 +163,8 @@ def scripts(args):
         debugger = Debugger(world, info)
         debugger.cmdloop()
     elif args.load is not None:
+        global sim
+        signal.signal(signal.SIGINT, interrupt_sim)
         import importlib.machinery as imp
 
         logging.root.setLevel(logging.INFO)
@@ -163,6 +174,9 @@ def scripts(args):
             logging.info(f"Loading {script}")
             script_module_loader = imp.SourceFileLoader("script", script)
             script_module = script_module_loader.load_module()
+
+            if hasattr(script_module, "args"):
+                script_module.args(unknown)
 
             if not hasattr(script_module, "world_generation"):
                 logging.fatal("The script is missing the function world_generation, to generate the world")
@@ -180,7 +194,6 @@ def scripts(args):
             recorder = DummyRecorder()
             recorder_filename = None
             save_data = DummyDataRecorder()
-
             if hasattr(script_module, "get_video_recorder"):
                 recorder, recorder_filename = script_module.get_video_recorder()
             if hasattr(script_module, "get_data_recorder"):
@@ -208,5 +221,5 @@ def scripts(args):
 
 
 if __name__ == "__main__":
-    arg = args()
-    arg.func(arg)
+    arg, unknown = args()
+    arg.func(arg, unknown)
