@@ -16,15 +16,17 @@ class SwarmSummary(object):
 
     """
 
-    def __init__(self, lowest: float, mean: float, std: float, highest: float):
+    def __init__(self, raw, lowest: float, mean: float, std: float, highest: float):
         """
 
+        :raw: The raw data
         :lowest: The lowest traveling distance
         :mean: The mean traveling distance
         :std: The std varaince of traveling distance
         :higest: The highest traveling distance
 
         """
+        self._raw = raw
         self._lowest = lowest
         self._mean = mean
         self._std = std
@@ -140,7 +142,7 @@ class Swarm(object):
         s = stdev(traveling_distance)
         high = max(traveling_distance)
 
-        return SwarmSummary(low, m, s, high)
+        return SwarmSummary(traveling_distance, low, m, s, high)
 
     def _get_position(self) -> None:
         """ Get the position from the agent
