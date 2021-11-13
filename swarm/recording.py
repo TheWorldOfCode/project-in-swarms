@@ -103,6 +103,7 @@ class BasicDataRecorder(DummyDataRecorder):
         f.write(f"swarm_mean_travel_distance: {swarm_summary.mean}\n")
         f.write(f"swarm_std_travel_distance: {swarm_summary.std}\n")
         f.write(f"swarm_highest_travel_distance: {swarm_summary.highest}\n")
+        f.write(f"raw_travel_distance: {swarm_summary._raw}\n")
 
 
 class AgentDataRecorder(BasicDataRecorder):
