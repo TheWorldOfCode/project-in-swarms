@@ -32,11 +32,9 @@ class AgentInterface():
 
         rnd.setstate(state)
 
-        if self._conf.get("history", False):
-            self._history = []
+        self._history = []
 
-        if self._conf.get("record", False):
-            self._record = []
+        self._record = []
 
     def move(self, world, updated_pos) -> int:
         """ Move the agent
