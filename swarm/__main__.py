@@ -4,6 +4,7 @@ import argparse
 import os
 import sys
 import signal
+import networkx as nx
 from random import seed
 
 from .world import World, WorldGenerator
@@ -61,6 +62,35 @@ def args():
     subparse_scripts.add_argument("--debug", help="Debug a result", nargs=1, type=str, default=None)
 
     subparse_scripts.set_defaults(func=scripts)
+
+    subparse_tsp = subparsers.add_parser("tsp", help="Solve the traveling salesman problem")
+    subparse_tsp.add_argument("-n", "--nodes",
+                              help="The minmum and maximum number of nodes in the world",
+                              nargs=2, metavar=("min", "max"), type=int,
+                              required=True)
+    subparse_tsp.add_argument("-e", "--edge-multiplier",
+                              help="The number of edges is determine by the number of edges times the multiplier",
+                              nargs=1, metavar="multiplier", default=1,
+                              type=float)
+    subparse_tsp.add_argument("-c", "--edge-cost",
+                              help="The range of cost between nodes",
+                              nargs=2, metavar=("min", "max"), type=float,
+                              default=(1, 10))
+    subparse_tsp.add_argument("--seed",
+                              help="The seed for the autogeneration",
+                              metavar="seed", type=int,
+                              default=seed())
+    group = subparse_tsp.add_mutually_exclusive_group(required=True)
+    group.add_argument("--christofides", help="Solve TSP with chrisofides, approximation solution", action="store_true")
+    group.add_argument("--traveling_salesman_problem", help="Find the shortest path", action="store_true")
+    group.add_argument("--greedy_tsp", help="Finds low cost cycle", action="store_true")
+    group.add_argument("--asadpour_tsp", action="store_true")
+    
+    group = subparse_tsp.add_mutually_exclusive_group(required=False)
+    group.add_argument("--simulated-annealing-tsp", help="Optimize a solution", nargs=4, metavar=("temp", "max_itr", "N_inner", "alpha"))
+    group.add_argument("--threshold-accepting-tsp", help="Optimize the solution", nargs=4, metavar=("thres", "max_itr", "N_inner", "alpha"))
+
+    subparse_tsp.set_defaults(func=TSP)
 
     return parser.parse_known_args()
 
@@ -218,6 +248,51 @@ def scripts(args, unknown):
         from .example import get_example
 
         sys.stdout.write(get_example())
+
+
+def TSP(args, unknown):
+    """ Solve the travel salesman problem """
+    logging.root.setLevel(logging.INFO)
+    logging.info(f"Runtime arguments f{args}")
+
+    world_generator = WorldGenerator(args.nodes, args.edge_multiplier,
+                                     args.edge_cost, args.seed)
+
+    world = world_generator.generate()
+    world.full_connected()
+
+    if args.christofides:
+        path = nx.approximation.traveling_salesman_problem(world._map)
+    elif args.traveling_salesman_problem:
+        path = nx.approximation.traveling_salesman_problem(world._map)
+        pass
+    elif args.greedy_tsp:
+        path = nx.approximation.greedy_tsp(world._map)
+    elif args.asadpour_tsp:
+        path = nx.approximation.all_pairs_node_connectivity(world._map)
+    
+    op_path = None
+    if len(args.simulated_annealing_tsp) != 0:
+        temp, max_itr, N_inner, alpha = args.simulated_annealing_tsp
+        op_path = nx.approximation.simulated_annealing_tsp(world._map, path,
+                                                           temp=int(temp),
+                                                           max_iterations=int(max_itr),
+                                                           N_inner=int(N_inner),
+                                                           alpha=float(alpha))
+    elif len(args.threshold_accepting_tsp) != 0:
+        thres, max_itr, N_inner, alpha = args.simulated_annealing_tsp
+        op_path = nx.approximation.threshold_accepting_tsp(world._map, path,
+                                                           thres=int(thres),
+                                                           max_iterations=int(max_itr),
+                                                           N_inner=int(N_inner),
+                                                           alpha=float(alpha))
+
+    print("Solution:", path)
+    print("Cost: ", world.calc_cost_path(path))
+
+    if op_path is not None:
+        print("Optimized solution:", op_path)
+        print("Cost:", world.calc_cost_path(op_path))
 
 
 if __name__ == "__main__":

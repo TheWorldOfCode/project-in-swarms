@@ -72,7 +72,7 @@ class Simulator(object):
 
     """ The Simulator"""
 
-    def __init__(self, world: World, display=True, speed=-1,
+    def __init__(self, world: World, display=True, speed=-1, max_turns=100,
                  recording=DummyRecorder()):
         """ Create the simulator
 
@@ -86,6 +86,7 @@ class Simulator(object):
         self._display = display
         self._speed = speed
         self._turns = -1
+        self._max_turns = max_turns
         self._recorder = recording
 
     def start(self, swarm: Swarm):
@@ -119,7 +120,8 @@ class Simulator(object):
         """
         size = self._world.size()
         logging.debug(f"Explorated nodes: {self._explorated}, Total number of nodes: {size}")
-        return not self._explorated < size - 1
+
+        return not (self._explorated < size - 1 and self._turns < self._max_turns)
 
     def get_results(self) -> SimulationResult:
         """ Get the result of simulation """
