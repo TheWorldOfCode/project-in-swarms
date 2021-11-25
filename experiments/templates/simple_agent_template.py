@@ -1,0 +1,79 @@
+from swarm.world import WorldGenerator
+import swarm
+import swarm.agents as agents
+import argparse
+
+global arguments
+
+
+def args(unknown):
+    global arguments
+    parser = argparse.ArgumentParser()
+    parser.add_argument("--out", type=str, default="results.yaml")
+
+    arguments = parser.parse_args(unknown)
+
+
+###############################
+# THIS FUNCTION IS REQUIRED   #
+# It is used to generate the  #
+# the world.                  #
+###############################
+def world_generation():
+    """ Create the world """
+    world_generator = WorldGenerator({NODE}, {COST_MULTIPLIER}, {COST}, {SEED})
+
+    return world_generator.generate()
+
+
+##################################
+# THIS FUNCTION IS NOT REQUIRED  #
+# It is used to generate the     #
+# world.                         #
+##################################
+
+#def get_video_recorder():
+#    """ Get the recorder of the simulations """
+#    return swarm.VideoRecorder(1), "video.mp4"
+
+##################################
+# THIS FUNCTION IS NOT REQUIRED  #
+# It is used to save the result  #
+##################################
+def get_data_recorder():
+    """ Save the data from the simuation to file """
+    global arguments
+    return swarm.AgentDataRecorder(arguments.out)
+
+
+##################################
+# THIS FUNCTION IS REQUIRED      #
+# This is used to get the list   #
+# of agents to spawn in swarm    #
+##################################
+def agent_generator_list():
+    """ Get the list of agents to spawn """
+
+    conf = {"history": True,
+            'record': True,
+            'tau_1': {TAU_1},
+            'tau_2': {TAU_2},
+            'tau_3': {TAU_3}}
+
+    gen = agents.simple_agent_generator(conf)
+    generators = [[{AGENT}, gen]]
+
+    return generators
+
+
+##################################
+# THIS FUNCTION IS REQUIRED      #
+# This is used to get the list   #
+# arguments to the simulation    #
+##################################
+def get_sim_args():
+    """ Get the arguments to the simulation """
+    return {
+             'display': False,
+             'speed': 1,
+            }
