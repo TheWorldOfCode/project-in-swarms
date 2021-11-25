@@ -1,10 +1,12 @@
 image ?= swarm:dev
+test_image ?= swarm:test
 container_id_file ?= ./container_id
 name ?= swarm_development
 
 
 build:
-	docker build -t $(image) -f dev.dockerfile .
+	docker build -t $(image) -f .docker/dev.dockerfile .
+	docker build -t $(test_image) -f .docker/experiment.dockerfile . 
 
 buildrm:
 	docker rmi $(image)
@@ -41,4 +43,8 @@ rm:
 enter: $(container_id_file)
 	docker exec -it $(shell cat $(container_id_file)) vim
 
-.PHONY: build buildrm create start stop rm enter
+setup_test:
+	@./experiments/setup_experiments.sh ./experiments/map_1 ./experiments/templates/ "(10, 20)" 1 "(1, 10)" 0
+	@bash ./experiments/setup_parallel map_1 30 map_1_parallel
+
+.PHONY: build buildrm create start stop rm enter setup_test

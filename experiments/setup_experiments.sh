@@ -1,6 +1,7 @@
 #!/bin/bash
 
 folder=$1
+tmp_folder=$2
 mkdir -p $folder
 
 #node='(10, 20)'
@@ -8,10 +9,10 @@ mkdir -p $folder
 #cost='(1, 10)'
 #seed='0'
 
-node=$2
-multi=$3
-cost=$4
-seed=$5
+node=$3
+multi=$4
+cost=$5
+seed=$6
 
 tau_1=("0" "0.2" "0.4" "0.6" "0.8" "1.0")
 tau_2=("0" "0.2" "0.4" "0.6" "0.8" "1.0")
@@ -32,7 +33,7 @@ for agent in ${agents[@]}; do
                     continue
                 fi
                 echo "simple$i, $agent, $t1, $t2, $t3" >> $database
-                cat simple_agent_template.py \
+                cat $tmp_folder/simple_agent_template.py \
                     | sed "s/{NODE}/$node/" \
                     | sed "s/{COST_MULTIPLIER}/$multi/" \
                     | sed "s/{COST}/$cost/" \
@@ -49,7 +50,7 @@ done
 i=0
 for agent in ${agents[@]}; do
     echo "random$i, $agent,,," >> $database
-    cat random_agent_template.py \
+    cat $tmp_folder/random_agent_template.py \
         | sed "s/{NODE}/$node/" \
         | sed "s/{COST_MULTIPLIER}/$multi/" \
         | sed "s/{COST}/$cost/" \

@@ -207,6 +207,10 @@ def scripts(args, unknown):
 
             if hasattr(script_module, "args"):
                 script_module.args(unknown)
+            else:
+                if len(unknown) != 0:
+                    logging.fatal(f"Unknown args {unknown}")
+                    return 1
 
             if not hasattr(script_module, "world_generation"):
                 logging.fatal("The script is missing the function world_generation, to generate the world")
@@ -260,6 +264,7 @@ def TSP(args, unknown):
 
     world = world_generator.generate()
     world.full_connected()
+    world.switch()
 
     if args.christofides:
         path = nx.approximation.traveling_salesman_problem(world._map)
