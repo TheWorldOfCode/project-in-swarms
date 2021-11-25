@@ -14,10 +14,6 @@ LABEL version "0.1"
 
 RUN apt update && apt install -y python3 \
                                  python3-pip \
-                                 vim \
-                                 git \
-                                 universal-ctags  \
-                                 python3-venv \
                                  python3-matplotlib \
                                  python3-pygraphviz \
                                  ffmpeg \
@@ -29,25 +25,19 @@ RUN ln -s /usr/bin/python3 /usr/bin/python
 
 RUN mkdir -p /home/swarm && useradd swarm && chown swarm:swarm /home/swarm
 
+# Setup user 
+RUN useradd -m swarm -p "$(openssl passwd -1 swarm)"; \
+    usermod -aG sudo swarm; \
+    mkdir -p /home/swarm
+
 WORKDIR /home/swarm
 USER swarm
 ENV PATH="/home/swarm/.local/bin:$PATH"
 
-# Development installment
-RUN python -m pip install flake8
-RUN python -m pip install PyQt5
-
-
-
-
 # Installing dependices
-COPY requirement.txt /home/swarm
-RUN python -m pip install -r requirement.txt
+COPY --chown=swarm:swarm . /home/swarm
+RUN python -m pip  install -r requirement.txt && python -m pip install .
+RUN rm -r /home/swarm/*
 
-
-
-COPY entrypoint.sh /home/swarm
-CMD ["vim"]
-ENTRYPOINT ["/home/swarm/entrypoint.sh"]
-
+ENTRYPOINT ["python", "-m", "swarm"]
 # vim: filetype=dockerfile
