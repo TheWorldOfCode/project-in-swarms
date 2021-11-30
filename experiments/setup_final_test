@@ -1,0 +1,57 @@
+#!/bin/bash
+
+
+folder=$1
+tmp_folder=$2
+mkdir -p $folder
+
+#node='(10, 20)'
+#seed='0'
+
+node="(20, 50)"
+multi='1'
+cost='(1, 10)'
+
+tau_1=$3
+tau_2=$4
+tau_3=$5
+agent=$6
+ragent=$7
+
+
+database=$1/database.csv
+
+echo "name, agent, tau_1, tau_2, tau_3, seed" > $database
+i=0
+k=0
+l=0
+for j in {1..10}; do
+    seed=$RANDOM
+    echo "simple$i, $agent, $t1, $t2, $t3, $seed" >> $database
+    cat $tmp_folder/simple_agent_template.py \
+        | sed "s/{NODE}/$node/" \
+        | sed "s/{COST_MULTIPLIER}/$multi/" \
+        | sed "s/{COST}/$cost/" \
+        | sed "s/{SEED}/$seed/" \
+        | sed "s/{TAU_1}/$tau_1/" \
+        | sed "s/{TAU_2}/$tau_2/" \
+        | sed "s/{TAU_3}/$tau_3/" \
+        | sed "s/{AGENT}/$agent/" > $folder/simple_agent_$i.py
+
+    echo "random$k, $agent,,,,$seed" >> $database
+    cat $tmp_folder/random_agent_template.py \
+        | sed "s/{NODE}/$node/" \
+        | sed "s/{COST_MULTIPLIER}/$multi/" \
+        | sed "s/{COST}/$cost/" \
+        | sed "s/{SEED}/$seed/" \
+        | sed "s/{AGENT}/$ragent/" > $folder/random_agent_$k.py
+    
+    echo "tsp$l,,,,$seed" >> $database
+    n=$(echo $node | sed 's/[\(|\)]//g' | sed 's/,/ /')
+    c=$(echo $cost | sed 's/[\(|\)]//g' | sed 's/,/ /')
+    echo "tsp --node $n --cost $c --seed $seed --christofides" > $folder/tsp_$l.sh
+    
+    i=$((i+1))
+    k=$((k+1))
+    l=$((l+1))
+done

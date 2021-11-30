@@ -47,4 +47,8 @@ setup_test:
 	@./experiments/setup_experiments.sh ./experiments/map_1 ./experiments/templates/ "(10, 20)" 1 "(1, 10)" 0
 	@bash ./experiments/setup_parallel map_1 30 map_1_parallel
 
-.PHONY: build buildrm create start stop rm enter setup_test
+setup_final_test:
+	@./experiments/setup_final_test ./experiments/final_test ./experiments/templates/ 0.6 0.8 0.2 20 20
+	@./experiments/setup_parallel final_test 30 final_test_parallel
+
+.PHONY: build buildrm create start stop rm enter setup_test setup_final_test
