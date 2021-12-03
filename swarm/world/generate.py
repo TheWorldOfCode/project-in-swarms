@@ -57,6 +57,7 @@ class WorldGenerator(object):
         logging.info("Generating complete world")
         world: nx.Graph = nx.gnm_random_graph(nodes, edge_count)
 
+
         logging.info("Connecting unconnected nodes")
         for i in nx.isolates(world):
             selected = i
@@ -65,6 +66,21 @@ class WorldGenerator(object):
                 if selected != i and len(list(nx.neighbors(world, selected))) != 0:
                     world.add_edge(i, selected)
                     break
+
+        logging.info("Removing smale clusters")
+
+        for i in nx.nodes(world):
+            if i == 0:
+                continue
+
+            path = list(nx.algorithms.simple_paths.all_simple_paths(world, 0, i))
+            if len(path) == 0:
+                neigh = list(nx.neighbors(world, i))
+                while True:
+                    selected = rnd.randint(0, nodes-1)
+                    if selected != i and selected not in neigh:
+                        world.add_edge(i, selected)
+                        break
 
         world.nodes[0]['color'] = START
         logging.info("Adding randoms weights to edges")

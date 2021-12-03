@@ -80,6 +80,9 @@ def args():
                               help="The seed for the autogeneration",
                               metavar="seed", type=int,
                               default=seed())
+    subparse_tsp.add_argument("--out",
+                              help="Save the result to file",
+                              metavar="filename", type=str)
     group = subparse_tsp.add_mutually_exclusive_group(required=True)
     group.add_argument("--christofides", help="Solve TSP with chrisofides, approximation solution", action="store_true")
     group.add_argument("--traveling_salesman_problem", help="Find the shortest path", action="store_true")
@@ -277,20 +280,24 @@ def TSP(args, unknown):
         path = nx.approximation.all_pairs_node_connectivity(world._map)
     
     op_path = None
-    if len(args.simulated_annealing_tsp) != 0:
+    if args.simulated_annealing_tsp is not None:
         temp, max_itr, N_inner, alpha = args.simulated_annealing_tsp
         op_path = nx.approximation.simulated_annealing_tsp(world._map, path,
                                                            temp=int(temp),
                                                            max_iterations=int(max_itr),
                                                            N_inner=int(N_inner),
                                                            alpha=float(alpha))
-    elif len(args.threshold_accepting_tsp) != 0:
+    elif args.threshold_accepting_tsp is not None:
         thres, max_itr, N_inner, alpha = args.simulated_annealing_tsp
         op_path = nx.approximation.threshold_accepting_tsp(world._map, path,
                                                            thres=int(thres),
                                                            max_iterations=int(max_itr),
                                                            N_inner=int(N_inner),
                                                            alpha=float(alpha))
+    if args.out is not None:
+        with open(args.out, "w") as f:
+            f.write(f"solution: {path}\n")
+            f.write(f"solution: {world.calc_cost_path(path)}\n")
 
     print("Solution:", path)
     print("Cost: ", world.calc_cost_path(path))
