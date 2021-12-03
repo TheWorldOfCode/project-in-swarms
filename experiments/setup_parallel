@@ -13,7 +13,7 @@ function setup_python {
     filename="$(basename -s py "$exp" | sed "s/test//" | sed "s/agent//" | sed "s/_//g" | sed "s/\.//")"
     for (( i = 0; i < $number; i++ )); do
         out="./results/${filename}_$i.yaml"
-        echo "docker run --rm -v $(pwd)/experiments:/home/swarm/experiments -v $(pwd)/results:/home/swarm/results swarm:test script -i $exp --out $out" >> $parallel
+        echo "docker run --rm -v $(pwd)/experiments:/home/swarm/experiments -v $(pwd)/results:/home/swarm/results swarm:test script -l $exp --out $out" >> $parallel
     done
 }
 
