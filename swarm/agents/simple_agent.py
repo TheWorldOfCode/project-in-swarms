@@ -18,10 +18,10 @@ class SimpleAgent(AgentInterface):
         The likelihood is divided into two parts, depending on
         if there is already agents at a candidate.
 
-        \[\lambda_{ac} = \begin{case}
+        \[\lambda_{ac} = \begin{cases}
                              \frac{1}{\eta}^{\alpha_c + 0.01} & \alpha_a \neq 0 \\
-                             \frac{\sum_{\alpha_c \neq 0} \lambda}{\eta_{\alpha_c \neq 0} & \alpha_c = 0
-                        \end{case}\]
+                             \frac{\sum_{\alpha_c \neq 0} \lambda}{\eta_{\alpha_c \neq 0}} & \alpha_c = 0
+                        \end{cases}\]
 
     
         Where $\lambda_ac$ is the likelihood for candidate c based on agents.
@@ -31,10 +31,10 @@ class SimpleAgent(AgentInterface):
 
         The likelihood for selecting note based on the if the node is explorated.
 
-        \[\lambda_{ec} = \begin{case}
+        \[\lambda_{ec} = \begin{cases}
                             \frac{1}{\Delta} & e_{c} = 0 \\
                             0 & e_{c} = 1
-                        \end{case}\]
+                        \end{cases}\]
 
         Where $\lambda_ec$ is the likelihood for candidate c based on if it is explorated.
         Where $\Delta$ is the number of explorated notes.

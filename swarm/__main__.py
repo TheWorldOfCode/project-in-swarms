@@ -297,7 +297,7 @@ def TSP(args, unknown):
     if args.out is not None:
         with open(args.out, "w") as f:
             f.write(f"solution: {path}\n")
-            f.write(f"solution: {world.calc_cost_path(path)}\n")
+            f.write(f"raw_travel_distance: {world.calc_cost_path(path)}\n")
 
     print("Solution:", path)
     print("Cost: ", world.calc_cost_path(path))
